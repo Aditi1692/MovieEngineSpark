@@ -73,7 +73,7 @@ seed = 5L
 regularization_parameter = 0.1
 iterations = 10
 train_times = [0, 0]
-dataset_sizes = [10,1]
+dataset_sizes = [20,1]
 start_time = time.time()
 model = ALS.train(ratings_data, best_rank, seed=seed, iterations=iterations,lambda_=regularization_parameter)
 train_times[0] = int(time.time() - start_time)
