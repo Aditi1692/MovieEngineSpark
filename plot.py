@@ -14,8 +14,8 @@ logger = logging.getLogger(__name__)
 
 sc = SparkContext('local', 'test')
 datasets_path = os.getcwd()
-ratings_file_path = os.path.join(datasets_path, 'ratingshuge.csv')
-movies_file_path = os.path.join(datasets_path, 'ratingsbig.csv')
+ratings_file_path = os.path.join(datasets_path, 'ratingsbig.csv')
+movies_file_path = os.path.join(datasets_path, 'ratings.csv')
 ratings_raw_data = sc.textFile(ratings_file_path)
 movies_raw_data = sc.textFile(movies_file_path)
 
