@@ -1,4 +1,4 @@
-import os
+import os, time
 from pyspark import SparkContext
 from pyspark.mllib.recommendation import ALS
 import math
@@ -38,7 +38,9 @@ class RecommendationEngine:
 		with the current dataset
 		"""
 		logger.info("Train the ALS model")
+		start_time = time.time()
 		self.model = ALS.train(self.ratings_RDD, self.rank, seed=self.seed, iterations=self.iterations, lambda_=self.regularization_parameter)
+		self.train_time = time.time() - start_time
 		logger.info("ALS model built")
 
 	def _predict_ratings(self, user_and_movie_RDD, sentiment):
@@ -46,10 +48,16 @@ class RecommendationEngine:
 		Gets predictions for a given (userID, movieID)
 		"""
 		sadgenre = 'Comedy'
+		mildsadgenre = 'Animation'
+		mildhappy = 'Sci-Fi'
 		happygenre = 'Adventure'
 		if sentiment == 1:
 			genre = sadgenre
-		else:
+		elif sentiment == 3:
+			genre = mildsadgenre
+		elif sentiment = 7:
+			genre = mildhappy
+		else:		
 			genre = happygenre
 		predicted_RDD = self.model.predictAll(user_and_movie_RDD)
 		predicted_rating_RDD = predicted_RDD.map(lambda x: (x.product, x.rating))
@@ -135,11 +143,13 @@ class RecommendationEngine:
 		self.movies_titles_RDD = self.movies_RDD.map(lambda x: (x[0], x[1], x[2].split("|"))).cache()
 		self._count_and_average_ratings()
 
+		self.train_time = 0
 		self.rank = 8
 		self.seed = 5L
 		self.iterations = 10
 		self.regularization_parameter = 0.1
 		self._train_model()
+
 '''
 	sc = SparkContext('local', 'test')
 	datasets_path = os.getcwd()
